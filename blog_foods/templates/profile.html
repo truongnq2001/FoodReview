@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="{% static 'img/logofoodreview.png' %}">
+	<title>Review ẩm thực PTIT</title>
+	<!-- Bootstrap core CSS -->
+	<link href="{% static 'css/mediumish.css' %}" rel="stylesheet">
+	<!-- Fonts -->
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+	<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+	<!-- Custom styles for this template -->
+	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+	<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+	<script src="js/checkphoto.js"></script>
+</head>
+
+<body>
+
+
+	<nav class="navbar navbar-toggleable-md navbar-light bg-white fixed-top mediumnavigation">
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+			data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="container">
+			<!-- Begin Logo -->
+			<a class="navbar-brand" href="/">
+				<img src="{% static 'img/logofoodreview.png' %}" alt="logo">
+			</a>
+			<!-- End Logo -->
+			<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+				<!-- Begin Menu -->
+				<ul class="navbar-nav ml-auto">
+					{% if user.is_authenticated %}
+					<li class="nav-item">
+						{% if Temp == 1 %}
+							<a href="{% url 'blog_foods:author' request.user.id %}"><img style = "width: 30px; height: 30px; float: none ;margin-right: -3px; border-radius: 100%;" class="author-thumb"src="{{ UpdateProfile.image_user.url }}"alt="Sal"></a>
+						{% elif Temp == 0 %}
+							<a href="{% url 'blog_foods:author' request.user.id %}"><img style = "width: 30px; height: 30px; float: none ;margin-right: -3px; border-radius: 100%;" class="author-thumb"src="https://www.gravatar.com/avatar/e56154546cf4be74e393c62d1ae9f9d4?s=250&amp;d=mm&amp;r=x"alt="Sal"></a>
+						{% endif %}
+						<a class="nav-link" style="display: inline-block;" href="{% url 'blog_foods:author' request.user.id %}">{{user.username}}</a>
+					</li>
+					{% endif %}
+					<li class="nav-item active">
+						<a class="nav-link" href="/">Bài viết <span class="sr-only">(current)</span></a>
+					</li>
+					{% if user.is_authenticated %}
+					<li class="nav-item">
+						<a class="nav-link" href="/create">Tạo bài viết</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'logout' %}">Logout</a>
+					</li>
+					{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'login' %}">Login</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="accounts/register">Register</a>
+					</li>
+					{% endif%}
+				</ul>
+				<!-- End Menu -->
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		{% if messages %}
+       		{% for message in messages %}
+        		{% if message.tags %}  <script>alert("{{ message }}")</script> {% endif %}
+        	{% endfor %}
+    	{% endif %}
+		<h3>Chỉnh sửa thông tin cá nhân</h3>
+
+		<form method="post" action="/upload-profile/" enctype="multipart/form-data">
+			{% csrf_token %}
+			{% if Temp == 1 %}
+			<div class="form-group">
+				<label>Tên người dùng</label>
+				<input type="text" name="name_user" class="form-control" value="{{ UpdateProfile.user }}" required>
+			</div>
+			<div class="form-group">
+				<label for="exampleInputFile">Ảnh đại diện hiện tại:</label>
+				<a href="{{ UpdateProfile.image_user.url }}"> {{ UpdateProfile.image_user.url }}</a>
+				<input type="hidden" name="old-img" class="form-control" value="{{ UpdateProfile.image_user.url }}">
+			</div>
+			<div class="form-group">
+				<label for="exampleInputFile">Thay đổi ảnh đại diện</label>
+				<input type="file" class="" id="img" name="img" accept="image/png, image/jpeg" onchange="checkPhoto(this)">
+			</div>
+			<div class="form-group">
+				<label>Mô tả</label>
+				<input type="text" name="summary_user" class="form-control" value="{{ UpdateProfile.summary_user }}">
+			</div>
+			<div class="form-group">
+				<label>Link Facebook</label>
+				<input type="text" name="Facebook" class="form-control" value="{{ UpdateProfile.Facebook }}">
+			</div>
+			<div class="form-group">
+				<label>Link Instagram</label>
+				<input type="text" name="Instagram" class="form-control" value="{{ UpdateProfile.Instagram }}">
+			</div>
+	
+			{% elif Temp == 0 %}
+			<div class="form-group">
+				<label>Tên người dùng</label>
+				<input type="text" name="name_user" class="form-control" value="{{ request.user }}" required>
+			</div>
+			<div class="form-group">
+				<label for="exampleInputFile">Ảnh đại diện</label>
+				<input type="file" class="" id="img" name="img" accept="image/png, image/jpeg" onchange="checkPhoto(this)" required>
+			</div>
+			<div class="form-group">
+				<label>Mô tả</label>
+				<input type="text" name="summary_user" class="form-control">
+			</div>
+			<div class="form-group">
+				<label>Link Facebook</label>
+				<input type="text" name="Facebook" class="form-control">
+			</div>
+			<div class="form-group">
+				<label>Link Instagram</label>
+				<input type="text" name="Instagram" class="form-control">
+			</div>
+			{% endif%}
+				
+			<div class="box-footer">
+
+				<button class="btn btn-primary btn-lg" type="submit" style="background-color: #02B875; border-inline-color: initial;
+				border-block-color: initial;">Cập nhật</button>
+			</div>
+		</form>
+
+	</div>
+			<!-- Begin Footer
+	================================================== -->
+		<div class="container">
+		<div class="footer">
+			<p class="pull-left">
+				Copyright &copy; 2021 PTIT FOOD
+			</p>
+			<p class="pull-right">
+				<a target="_blank" href="/" style="text-decoration: none; color: black;">PTIT FOOD</a> - Ẩm thực học viện hoàng gia
+			</p>
+			<div class="clearfix">
+			</div>
+		</div>
+	</div>
+	<script src="{% static 'js/checkphoto.js' %}"></script>
+		<!-- End Footer
+	================================================== -->
+</body>
+
+</html>

@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="{% static 'img/logofoodreview.png' %}">
+	<title>Review ẩm thực PTIT</title>
+	<!-- Bootstrap core CSS -->
+	<link href="{% static 'css/mediumish.css' %}" rel="stylesheet">
+	<!-- Fonts -->
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+	<!-- Custom styles for this template -->
+	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+
+<body>
+
+	<!-- Begin Nav
+================================================== -->
+	<nav class="navbar navbar-toggleable-md navbar-light bg-white fixed-top mediumnavigation">
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+			data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="container">
+			<!-- Begin Logo -->
+			<a class="navbar-brand" href="/">
+				<img src="{% static 'img/logofoodreview.png' %}" alt="logo">
+			</a>
+			<!-- End Logo -->
+			<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+				<!-- Begin Menu -->
+				<ul class="navbar-nav ml-auto">
+					{% if user.is_authenticated %}
+						<li class="nav-item">
+							{% if Temp == 1 %}
+								<a href="{% url 'blog_foods:author' request.user.id %}"><img style = "width: 30px; height: 30px; float: none ;margin-right: -3px; border-radius: 100%;" class="author-thumb"src="{{ UpdateProfile.image_user.url }}"alt="Sal"></a>
+							{% elif Temp == 0 %}
+								<a href="{% url 'blog_foods:author' request.user.id %}"><img style = "width: 30px; height: 30px; float: none ;margin-right: -3px; border-radius: 100%;" class="author-thumb"src="https://www.gravatar.com/avatar/e56154546cf4be74e393c62d1ae9f9d4?s=250&amp;d=mm&amp;r=x"alt="Sal"></a>
+							{% endif %}
+							<a class="nav-link" style="display: inline-block;" href="{% url 'blog_foods:author' request.user.id %}">{{user.username}}</a>
+						</li>
+					{% endif %}
+					<li class="nav-item active">
+						<a class="nav-link" href="/">Bài viết <span class="sr-only">(current)</span></a>
+					</li>
+					{% if user.is_authenticated %}
+					<li class="nav-item">
+						<a class="nav-link" href="/create">Tạo bài viết</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'logout' %}">Logout</a>
+					</li>
+					{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'login' %}">Login</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="accounts/register">Register</a>
+					</li>
+					{% endif%}
+				</ul>
+				<!-- End Menu -->
+			</div>
+		</div>
+	</nav>
+	<!-- End Nav
+================================================== -->
+
+<!-- Begin Top Author Page
+================================================== -->
+<div class="container">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 col-md-offset-2">
+                <div class="mainheading">
+                    <div class="row post-top-meta authorpage">
+                        <div class="col-md-10 col-xs-12">
+                            <h1>{{ singleAuthor.username }}</h1>
+							{% if Temp == 1 %}
+                            	<span class="author-description">{{ UpdateProfile.summary_user }}</span>
+                            	<div class="sociallinks"><a  target="_blank" href="{{ UpdateProfile.Facebook }}"><i class="fa fa-facebook"></i></a> <span class="dot"></span> <a target="_blank" href="{{ UpdateProfile.Instagram }}"><i class="fa fa-instagram"></i></a></div>
+							{% elif Temp == 0 %}
+								<span class="author-description">Đây là tài khoản thuộc hệ thống PTIT FOOD</span>
+                            	<div class="sociallinks"><a  target="_blank" href=""><i class="fa fa-facebook"></i></a> <span class="dot"></span> <a target="_blank" href=""><i class="fa fa-instagram"></i></a></div>
+							{% endif%}
+                            {% if request.user.id == singleAuthor.id %}
+								<a href="/profile" class="btn follow">Chỉnh sửa thông tin</a>
+							{% endif%}
+                        </div>
+                        <div class="col-md-2 col-xs-12">
+						{% if Temp == 1 %}
+                            <img class="author-thumb" src="{{ UpdateProfile.image_user.url }}" alt="Sal">
+						{% elif Temp == 0 %}
+							 <img class="author-thumb" src="https://www.gravatar.com/avatar/e56154546cf4be74e393c62d1ae9f9d4?s=250&amp;d=mm&amp;r=x" alt="Sal">
+						{% endif%}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+    <!-- End Top Author Meta
+    ================================================== -->
+
+    <!-- Begin Author Posts
+    ================================================== -->
+    <div class="graybg authorpage">
+        <div class="container">
+            <div class="listrecent listrelated">
+
+                {% for post in postss reversed %}
+                    <div class="authorpostbox">
+                        <div class="card">
+                            <a href="{% url 'blog_foods:post' post.id %}">{%if post.image%} <img class="img-fluid img-thumb" src="{{post.image.url}}" alt="">{%endif%}</a>
+                            <div class="card-block">
+                                <h2 class="card-title"><a href="{% url 'blog_foods:post' post.id %}">{{ post.caption }}</a></h2>
+                                <h4 class="card-text">{{ post.summary|safe }}</h4>
+                                    <div class="metafooter">
+                                    <div class="wrapfooter">
+                                        <span class="meta-footer-thumb">
+										{% if Temp == 1 %}
+											<a href="{% url 'blog_foods:author' singleAuthor.id %}"><img class="author-thumb"src="{{ UpdateProfile.image_user.url }}"alt="Sal"></a>
+										{% elif Temp == 0 %}
+											<a href="{% url 'blog_foods:author' singleAuthor.id %}"><img class="author-thumb"src="https://www.gravatar.com/avatar/e56154546cf4be74e393c62d1ae9f9d4?s=250&amp;d=mm&amp;r=x"alt="Sal"></a>
+										{% endif %}
+                                        </span>
+                                        <span class="author-meta">
+                                        <span class="post-name"><a style="text-decoration: none;" href="{% url 'blog_foods:author' singleAuthor.id %}">{{ singleAuthor.username }}</a></span><br/>
+                                        <span class="post-date">{{ post.created_at }}</span>
+                                        </span>
+										{% if request.user.id == singleAuthor.id %}
+											<span class="post-read-more">
+												<a href="{% url 'blog_foods:delete_post' post.pk %}" class="btn follow">Xóa</a>
+											</span>
+											<span class="post-read-more">
+												<a style="margin-right: 7px;" href="{% url 'blog_foods:update_post' post.pk %}" class="btn follow">Sửa</a>
+											</span>
+										{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+<!-- End Author Posts
+================================================== -->
+
+<!-- Begin Footer
+================================================== -->
+	<div class="container">
+		<div class="footer">
+			<p class="pull-left">
+				Copyright &copy; 2021 PTIT FOOD
+			</p>
+			<p class="pull-right">
+				<a target="_blank" href="/" style="text-decoration: none; color: black;">PTIT FOOD</a> - Ẩm thực học viện hoàng gia
+			</p>
+			<div class="clearfix">
+			</div>
+		</div>
+	</div>
+	<!-- End Footer
+================================================== -->
+
+	<!-- Bootstrap core JavaScript
+================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="{% static 'js/jquery.min.js' %}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+		integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+		crossorigin="anonymous"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
+</body>
+
+</html>

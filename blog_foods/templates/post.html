@@ -1,0 +1,156 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="{% static 'img/logofoodreview.png' %}">
+	<title>Review ẩm thực PTIT</title>
+	<!-- Bootstrap core CSS -->
+	<link href="{% static 'css/mediumish.css' %}" rel="stylesheet">
+	<!-- Fonts -->
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Righteous%7CMerriweather:300,300i,400,400i,700,700i"
+		rel="stylesheet">
+	<!-- Custom styles for this template -->
+	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+
+<body>
+
+	<!-- Begin Nav
+================================================== -->
+	<nav class="navbar navbar-toggleable-md navbar-light bg-white fixed-top mediumnavigation">
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+			data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="container">
+			<!-- Begin Logo -->
+			<a class="navbar-brand" href="/">
+				<img src="{% static 'img/logofoodreview.png' %}" alt="logo">
+			</a>
+			<!-- End Logo -->
+			<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+				<!-- Begin Menu -->
+				<ul class="navbar-nav ml-auto">
+					{% if user.is_authenticated %}
+					<li class="nav-item">
+						{% for i in up %}
+							{% if request.user.id == i.user.id %}
+								<a href="{% url 'blog_foods:author' request.user.id %}"><img style = "width: 30px; height: 30px; float: none ;margin-right: -3px; border-radius: 100%;" class="author-thumb"src="{{ i.image_user.url }}"alt="Sal"></a>
+							{% endif %}
+						{% endfor %}
+						<a class="nav-link" style="display: inline-block;" href="{% url 'blog_foods:author' request.user.id %}">{{user.username}}</a>
+					</li>
+					{% endif %}
+					<li class="nav-item active">
+						<a class="nav-link" href="/">Bài viết <span class="sr-only">(current)</span></a>
+					</li>
+					{% if user.is_authenticated %}
+					<li class="nav-item">
+						<a class="nav-link" href="/create">Tạo bài viết</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'logout' %}">Logout</a>
+					</li>
+					{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'login' %}">Login</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="accounts/register">Register</a>
+					</li>
+					{% endif%}
+				</ul>
+				<!-- End Menu -->
+			</div>
+		</div>
+	</nav>
+
+	<!-- Begin Article
+================================================== -->
+	<div class="container">
+		<div class="row">
+			<!-- Begin Post -->
+			<div class="col-md-8 col-md-offset-2 col-xs-12">
+				<div class="mainheading">
+
+					<!-- Begin Top Meta -->
+					<div class="row post-top-meta">
+						<div class="col-md-2">
+							<a href="{% url 'blog_foods:author' post.posted_by_id %}"><img class="author-thumb"
+									src="{{ UpdateProfile.image_user.url }}"
+									alt="Sal"></a>
+						</div>
+						<div class="col-md-10" style="display: grid;">
+							<a style="text-decoration: none;" class="link-dark" href="{% url 'blog_foods:author' post.posted_by_id %}"><strong>{{post.posted_by}}</strong></a>
+							{% if Temp == 1 %}
+								<span class="author-description">{{ UpdateProfile.summary_user }}</span>
+							{% elif Temp == 0 %}
+								<span class="author-description">Đây là tài khoản thuộc hệ thống PTIT FOOD</span>
+							{% endif%}
+							<span class="post-date">{{post.created_at}}</span></span></span>
+						</div>
+					</div>
+					<!-- End Top Menta -->
+
+					<h1 class="posttitle">Tên món ăn: {{post.caption}}</h1>
+
+				</div>
+
+				<div class="form-group">
+					<img class="featured-image img-fluid" src="{{post.image.url}}" alt="">
+					<!-- 
+					T chua biet gan anh vao cac o sua nhe
+				-->
+					<p style="color: tomato;"><strong style="color: black;">Giá: </strong><strong>{{post.price}}₫</strong></p>
+					<p><strong>Địa chỉ: {{post.address}} </strong></p>
+					<p><strong>Điểm: {{post.rate}}/10</strong></p>
+				</div>
+				<!-- Begin Post Content -->
+				<div class="article-post">
+					<p><strong>Nội dung mô tả: </strong>{{post.description|safe}}</p>
+				</div>
+				<!-- End Post Content -->
+			</div>
+			<!-- End Post -->
+
+		</div>
+	</div>
+	<!-- End Article
+================================================== -->
+
+	<!-- Begin Footer
+================================================== -->
+	<div class="container">
+		<div class="footer">
+			<p class="pull-left">
+				Copyright &copy; 2021 PTIT FOOD
+			</p>
+			<p class="pull-right">
+				<a target="_blank" href="/" style="text-decoration: none; color: black;">PTIT FOOD</a> - Ẩm thực học viện hoàng gia
+			</p>
+			<div class="clearfix">
+			</div>
+		</div>
+	</div>
+	<!-- End Footer
+================================================== -->
+
+	<!-- Bootstrap core JavaScript
+================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="{% static 'js/jquery.min.js' %}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+		integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+		crossorigin="anonymous"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
+</body>
+
+</html>
